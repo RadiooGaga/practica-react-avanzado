@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import { useArithmetics } from '../../customHooks/useArithmetics';
 import './Calculator.css'
 
@@ -15,9 +15,9 @@ export const Calculator = () => {
     const [prevValue, setPrevValue] = useState(null); // valores previos
 
 
-    const handleInputChange = (e) => {
-        setInputValue(Number(e.target.value));  
-    };
+    const handleInputChange = useCallback((e) => {
+      setInputValue(Number(e.target.value));
+    }, []);
 
   
     useEffect(() => { // Ordenar el historial cuando calc cambia
@@ -31,48 +31,51 @@ export const Calculator = () => {
 
 
     // Manejar la selección de una operación
-    const handleOperation = (operationType) => {
+    const handleOperation = useCallback((operationType) => {
       inputValue === '' ? setPrevValue(calc) : setPrevValue(inputValue);
       setOperation(operationType); // Guardar la operación seleccionada
-      setInputValue(''); 
-    };
-
-
-      // clic en '='
-    const handleCalculateAndStoreResult = () => {
-
-    if (prevValue === null || inputValue === '') return; 
-
-    let result; 
-    const currentValue = Number(inputValue);
-
-    if (prevValue !== null) {
-      if (operation === 'sum') {
-        result = handleSum(prevValue, currentValue);
-      } else if (operation === 'subtract') {
-        result = handleSubstract(prevValue, currentValue);
-      } else if (operation === 'multiply') {
-        result = handleMultiply(prevValue, currentValue);
-      } else if (operation === 'divide') {
-        result = handleDivide(prevValue, currentValue);
-      } else if (operation === 'percentage') {
-        result = handlePercentage(prevValue, currentValue);
-      }
-
-      // almacenar totales, limpiar el valor previo, la operacion y el input
-      setCalc(result); 
-      setPrevValue(null); 
-      setOperation(null);
       setInputValue('');
-    }
-  };
+    }, [inputValue, calc]);
 
 
-    const cleanHistory = () => { console.log("historial reset")
-        setHistory([])
-        setCalc(0)
-        setInputValue('')
-    }
+      
+    
+    // clic en '='
+    const handleCalculateAndStoreResult = useCallback(() => {
+      if (prevValue === null || inputValue === '') return;
+
+      let result; 
+      const currentValue = Number(inputValue);
+
+      if (prevValue !== null) {
+        if (operation === 'sum') {
+          result = handleSum(prevValue, currentValue);
+        } else if (operation === 'subtract') {
+          result = handleSubstract(prevValue, currentValue);
+        } else if (operation === 'multiply') {
+          result = handleMultiply(prevValue, currentValue);
+        } else if (operation === 'divide') {
+          result = handleDivide(prevValue, currentValue);
+        } else if (operation === 'percentage') {
+          result = handlePercentage(prevValue, currentValue);
+        }
+
+        // almacenar totales, limpiar el valor previo, la operacion y el input
+        setCalc(result); 
+        setPrevValue(null);
+        setOperation(null);
+        setInputValue('');
+      }
+    }, [prevValue, inputValue, operation, handleSum, handleSubstract, handleMultiply, handleDivide, handlePercentage]); 
+    // Esta función depende de todos estos valores y se recreará cuando cambien
+
+
+    const cleanHistory = useCallback(() => { 
+      console.log("Historial reseteado");
+      setHistory([]);
+      setCalc(0);
+      setInputValue('');
+    }, []);
 
 
     return (

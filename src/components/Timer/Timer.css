@@ -1,0 +1,8 @@
+.timerDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    background-color:rgb(205, 174, 192);
+    margin-top: 1em;
+}

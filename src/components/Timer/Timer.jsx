@@ -1,8 +1,8 @@
-import React, { useEffect, useState, memo } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Timer.css'
 
 
-export const Timer = memo(() => {
+export const Timer = () => {
 
   const [date, setDate] = useState(new Date());
 
@@ -19,4 +19,4 @@ export const Timer = memo(() => {
       <h2>RELOJ: {date.toLocaleTimeString()}</h2>
     </div>
   );
-});
+};
